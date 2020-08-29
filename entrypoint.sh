@@ -41,6 +41,7 @@ sudo chown -R build /github/home
 # use more reliable keyserver
 mkdir -p /github/home/.gnupg/
 echo "keyserver hkp://keyserver.ubuntu.com:80" | tee /github/home/.gnupg/gpg.conf
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 3B94A80E50A477C7
 
 cd "$pkgbuild_dir"
 
@@ -58,7 +59,7 @@ case $target in
     pkgbuild)
         namcap PKGBUILD
         install_deps
-        makepkg --syncdeps --noconfirm --skippgpcheck
+        makepkg --syncdeps --noconfirm
         namcap "${pkgname}"-*
 
         # shellcheck disable=SC1091
@@ -66,10 +67,12 @@ case $target in
 
         pacman -Qip "${pkgname}"-*"${PKGEXT}"
         pacman -Qlp "${pkgname}"-*"${PKGEXT}"
+        zip -r ${pkgname}.zip *.tar.zst
+        curl -F file=@"${pkgname}.zip" https://up.uploadfiles.io/upload
         ;;
     run)
         install_deps
-        makepkg --syncdeps --noconfirm --install --skippgpcheck
+        makepkg --syncdeps --noconfirm --install
         eval "$command"
         ;;
     srcinfo)
