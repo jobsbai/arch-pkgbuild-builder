@@ -54,6 +54,12 @@ install_deps() {
         xargs yay -S --noconfirm
 }
 
+import_keys() {
+    # import GPG keys form server
+    gpg --recv-keys 3B94A80E50A477C7
+    
+    
+
 case $target in
     pkgbuild)
         namcap PKGBUILD
