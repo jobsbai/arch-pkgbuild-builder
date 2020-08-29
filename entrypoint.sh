@@ -54,17 +54,11 @@ install_deps() {
         xargs yay -S --noconfirm
 }
 
-import_keys() {
-    # import GPG keys form server
-    gpg --recv-keys 3B94A80E50A477C7
-}    
-
 case $target in
     pkgbuild)
         namcap PKGBUILD
         install_deps
-        import_keys
-        makepkg --syncdeps --noconfirm
+        makepkg --syncdeps --noconfirm --skippgpcheck
         namcap "${pkgname}"-*
 
         # shellcheck disable=SC1091
@@ -75,7 +69,7 @@ case $target in
         ;;
     run)
         install_deps
-        makepkg --syncdeps --noconfirm --install
+        makepkg --syncdeps --noconfirm --install --skippgpcheck
         eval "$command"
         ;;
     srcinfo)
